@@ -13,7 +13,7 @@ void red()
   printf("\033[1;31m");
 }
 void yellow()
-{
+{ 
   printf("\033[1;33m");
 }
 void reset()
@@ -190,6 +190,9 @@ char *read_line_stdin(void)
 
   /***** BEGIN ANSWER HERE *****/
 
+  if (line != NULL){
+    size_t read = getline(&line, &buf_size, stdin);
+  }
   /*********************/
 
   return line;
@@ -214,6 +217,14 @@ char **tokenize_line_stdin(char *line)
   // 4. Add NULL termination in tokens so we know how many "valid" addresses there are in tokens
   /***** BEGIN ANSWER HERE *****/
 
+  token = strtok(line ," ");
+  int index = 0;
+
+  while(token != NULL){
+    tokens[index] = token;
+    token = strtok(NULL ," ");
+    index++;
+  }
   /*********************/
 
   return tokens;
@@ -268,21 +279,33 @@ void main_loop(void)
 int main(int argc, char **argv)
 {
 
-  printf("CSEShell Run successful. Running now: \n");
+  // printf("CSEShell Run successful. Running now: \n");
 
-  // Setup path
-  if (getcwd(output_file_path, sizeof(output_file_path)) != NULL)
-  {
-    printf("Current working dir: %s\n", output_file_path);
-  }
-  else
-  {
-    perror("getcwd() error, exiting now.");
-    return 1;
-  }
+  // // Setup path
+  // if (getcwd(output_file_path, sizeof(output_file_path)) != NULL)
+  // {
+  //   printf("Current working dir: %s\n", output_file_path);
+  // }
+  // else
+  // {
+  //   perror("getcwd() error, exiting now.");
+  //   return 1;
+  // }
 
-  // Run command loop
-  main_loop();
+  // // Run command loop
+  // main_loop();
 
-  return 0;
+  // return 0;
+
+  printf("Shell Run successful. Running now: \n");
+ 
+ char* line = read_line_stdin();
+ printf("The fetched line is : %s \n", line);
+ 
+ char** args = tokenize_line_stdin(line);
+ printf("The first token is %s \n", args[0]);
+ printf("The second token is %s \n", args[1]);
+ 
+ return 0;
+
 }
