@@ -155,6 +155,8 @@ int shell_exit(char **args)
 int process_command(char **args)
 {
   int child_exit_status = -1;
+  int status;
+
   /** TASK 3 **/
 
   // 1. Check if args[0] is NULL. If it is, an empty command is entered, return 1
@@ -165,6 +167,41 @@ int process_command(char **args)
   // DO NOT PRINT ANYTHING TO THE OUTPUT
 
   /***** BEGIN ANSWER HERE *****/
+
+  //1. Check if args[0] is NULL. If it is, an empty command is entered, return 1
+  if (args[0] == NULL)
+  {
+    return 1;
+  }
+
+  //2. Otherwise, check if args[0] is in any of our builtin_commands: cd, help, exit, or usage.
+  for(int i = 0; i < num_builtin_functions(); i++){
+
+    if(strcmp(args[0], builtin_commands[i]) == 0){
+
+    //3. If conditions in (2) are satisfied, call builtin shell commands
+        builtin_command_func[i](args);
+        return 1;
+    }
+
+    else{
+        // Otherwise perform fork() to exec the system program. Check if fork() is successful.
+        pid_t pid = fork();
+
+        if (pid < 0){
+          fprintf(stderr, "Fork has failed. Exiting now");
+          return 1; // exit error
+        }
+        else if (pid == 0){
+          exec_sys_prog(args);
+        }
+        else
+        {
+          wait(&status);
+          child_exit_status = WEXITSTATUS(status);
+        }
+    }
+  }
 
   /*********************/
   if (child_exit_status != 1)
@@ -230,7 +267,7 @@ char **tokenize_line_stdin(char *line)
     }
   }
   else{
-    printf("ERror");
+    printf("Error");
   }
   /*********************/
 
@@ -285,17 +322,29 @@ void main_loop(void)
 
 int main(int argc, char **argv)
 {
- 
- printf("Shell Run successful. Running now: \n");
- 
- char* line = read_line_stdin();
- printf("The fetched line is : %s \n", line);
- 
- char** args = tokenize_line_stdin(line);
- printf("The first token is %s \n", args[0]);
- printf("The second token is %s \n", args[1]);
- 
- return 0;
+
+  printf("Shell Run successful. Running now: \n");
+
+  char *line = read_line_stdin();
+  printf("The fetched line is : %s \n", line);
+
+  char **args = tokenize_line_stdin(line);
+  printf("The first token is %s \n", args[0]);
+  printf("The second token is %s \n", args[1]);
+
+  // Setup path
+  if (getcwd(output_file_path, sizeof(output_file_path)) != NULL)
+  {
+    printf("Current working dir: %s\n", output_file_path);
+  }
+  else
+  {
+    perror("getcwd() error, exiting now.");
+    return 1;
+  }
+  process_command(args);
+
+  return 0;
 }
 
 /**
