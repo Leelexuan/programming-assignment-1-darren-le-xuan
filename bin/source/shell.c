@@ -1,5 +1,6 @@
 #include "shell.h"
 
+
 // vars to load system programs
 char output_file_path[PATH_MAX];
 char local_path[PATH_MAX] = "/bin/";
@@ -174,6 +175,7 @@ int process_command(char **args)
     return 1;
   }
 
+
   //2. Otherwise, check if args[0] is in any of our builtin_commands: cd, help, exit, or usage.
   for(int i = 0; i < num_builtin_functions(); i++){
 
@@ -182,26 +184,26 @@ int process_command(char **args)
     //3. If conditions in (2) are satisfied, call builtin shell commands
         builtin_command_func[i](args);
         return 1;
+    }}
+
+  
+    // Otherwise perform fork() to exec the system program. Check if fork() is successful.
+    pid_t pid = fork();
+
+    if (pid < 0){
+      fprintf(stderr, "Fork has failed. Exiting now");
+      return 1; // exit error
+    }
+    else if (pid == 0){
+      status = exec_sys_prog(args);
     }
 
-    else{
-        // Otherwise perform fork() to exec the system program. Check if fork() is successful.
-        pid_t pid = fork();
-
-        if (pid < 0){
-          fprintf(stderr, "Fork has failed. Exiting now");
-          return 1; // exit error
-        }
-        else if (pid == 0){
-          exec_sys_prog(args);
-        }
-        else
-        {
-          wait(&status);
-          child_exit_status = WEXITSTATUS(status);
-        }
+    else
+    {
+      wait(&status);
+      child_exit_status = WEXITSTATUS(status);
     }
-  }
+    
 
   /*********************/
   if (child_exit_status != 1)

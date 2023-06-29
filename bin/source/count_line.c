@@ -9,6 +9,9 @@ int execute(char **args)
     int number_of_lines = 0;
     FILE *fp;
 
+    char *buffer = NULL;
+    size_t size = 0;
+
     // open file in read mode
     fp = fopen(args[1], "r");
 
@@ -26,7 +29,10 @@ int execute(char **args)
     // DO NOT PRINT ANYTHING TO THE OUTPUT
 
     /***** BEGIN ANSWER HERE *****/
-    
+    // 1. Read the file line by line by using getline(&buffer, &size, fp)
+    while (getline(&buffer, &size, fp) != -1){
+        number_of_lines += 1;
+    }
     /*********************/
     fclose(fp); // close file.
     printf("%d \t %s \n", number_of_lines, args[1]);
