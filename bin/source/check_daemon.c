@@ -17,6 +17,8 @@ int execute()
 
    free(command);
 
+   char *buffer;
+   size_t bufsize = 32;
    int live_daemons = 0;
    FILE *fptr;
 
@@ -29,6 +31,17 @@ int execute()
 
    /***** BEGIN ANSWER HERE *****/
 
+   fptr = fopen("output.txt", "r");
+
+   if (!fptr){
+        printf("File %s cannot be found.\n", "output.txt");
+        return 1;
+   }
+   size_t len = 0;
+
+    while(getline(&buffer, &bufsize, fptr)!=-1){
+        live_daemons++;
+    }
    /*********************/
    if (live_daemons == 0)
       printf("No daemon is alive right now.\n");
