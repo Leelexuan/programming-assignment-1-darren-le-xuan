@@ -37,11 +37,10 @@ int execute()
         printf("File %s cannot be found.\n", "output.txt");
         return 1;
    }
-   size_t len = 0;
 
-    while(getline(&buffer, &bufsize, fptr)!=-1){
+   while(getline(&buffer, &bufsize, fptr)!=-1){
         live_daemons++;
-    }
+   }
    /*********************/
    if (live_daemons == 0)
       printf("No daemon is alive right now.\n");

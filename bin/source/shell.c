@@ -27,6 +27,7 @@ void setup_program_path(char **args)
   strcpy(program_name, output_file_path);
   strcat(program_name, local_path);
   strcat(program_name, name);
+  printf("Program name: %s\n", program_name);
 }
 
 void print_error_message(char **args)
@@ -177,30 +178,31 @@ int process_command(char **args)
   //2. Otherwise, check if args[0] is in any of our builtin_commands: cd, help, exit, or usage.
   for(int i = 0; i < num_builtin_functions(); i++){
 
+    char *command = builtin_commands[i];
+    
     if(strcmp(args[0], builtin_commands[i]) == 0){
 
-    //3. If conditions in (2) are satisfied, call builtin shell commands
+        printf("Builtin command %s found\n", args[0]);
+        //3. If conditions in (2) are satisfied, call builtin shell commands
         builtin_command_func[i](args);
         return 1;
     }
+  }
+  
+  // Otherwise perform fork() to exec the system program. Check if fork() is successful.
+  pid_t pid = fork();
 
-    else{
-        // Otherwise perform fork() to exec the system program. Check if fork() is successful.
-        pid_t pid = fork();
-
-        if (pid < 0){
-          fprintf(stderr, "Fork has failed. Exiting now");
-          return 1; // exit error
-        }
-        else if (pid == 0){
-          exec_sys_prog(args);
-        }
-        else
-        {
-          wait(&status);
-          child_exit_status = WEXITSTATUS(status);
-        }
+  if (pid < 0){
+    fprintf(stderr, "Fork has failed. Exiting now");
+    return 1; // exit error
     }
+    else if (pid == 0){
+      status = exec_sys_prog(args);
+    }
+    else
+    {
+      wait(&status);
+      child_exit_status = WEXITSTATUS(status);
   }
 
   /*********************/
@@ -234,7 +236,6 @@ char *read_line_stdin(void)
     printf("Storage is full!");
   }
   /*********************/
-
   return line;
 }
 
