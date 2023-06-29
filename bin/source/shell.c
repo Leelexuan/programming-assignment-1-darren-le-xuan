@@ -182,8 +182,8 @@ int process_command(char **args)
     if(strcmp(args[0], builtin_commands[i]) == 0){
 
         //3. If conditions in (2) are satisfied, call builtin shell commands
-        builtin_command_func[i](args);
-        return 1;
+        status = builtin_command_func[i](args);
+        return status;
     }}
 
   
@@ -210,7 +210,8 @@ int process_command(char **args)
   {
     printf("Command %s has terminated abruptly.\n", args[0]);
   }
-  return 1;
+
+  return status;
 }
 
 /**
@@ -336,7 +337,7 @@ void main_loop(void)
 
     
 
-  } while (status); 
+  } while(status); 
 }
 /**
 
