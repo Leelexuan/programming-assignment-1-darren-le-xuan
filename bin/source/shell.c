@@ -14,7 +14,7 @@ void red()
   printf("\033[1;31m");
 }
 void yellow()
-{
+{ 
   printf("\033[1;33m");
 }
 void reset()
@@ -179,9 +179,12 @@ int process_command(char **args)
   //2. Otherwise, check if args[0] is in any of our builtin_commands: cd, help, exit, or usage.
   for(int i = 0; i < num_builtin_functions(); i++){
 
+    char *command = builtin_commands[i];
+
     if(strcmp(args[0], builtin_commands[i]) == 0){
 
-    //3. If conditions in (2) are satisfied, call builtin shell commands
+        printf("Builtin command %s found\n", args[0]);
+        //3. If conditions in (2) are satisfied, call builtin shell commands
         builtin_command_func[i](args);
         return 1;
     }}
@@ -236,7 +239,6 @@ char *read_line_stdin(void)
     printf("Storage is full!");
   }
   /*********************/
-
   return line;
 }
 
@@ -269,7 +271,7 @@ char **tokenize_line_stdin(char *line)
     }
   }
   else{
-    printf("ERror");
+    printf("Error");
   }
   /*********************/
 
