@@ -268,12 +268,13 @@ char **tokenize_line_stdin(char *line)
   if (tokens != NULL){
     token = strtok(line, " ");
     int i = 0;
+    current_number_tokens = 0;
 
     while (token != NULL){
       tokens[i] = token;
       token = strtok(NULL, " ");
       i += 1;
-      
+      current_number_tokens += 1;
     }
   }
   else{
