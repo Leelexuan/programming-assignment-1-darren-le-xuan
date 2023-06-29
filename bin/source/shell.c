@@ -157,7 +157,7 @@ int process_command(char **args)
   int child_exit_status = -1;
   int status;
 
-  /** TASK 3 **/
+  // TASK 3 /
 
   // 1. Check if args[0] is NULL. If it is, an empty command is entered, return 1
   // 2. Otherwise, check if args[0] is in any of our builtin_commands: cd, help, exit, or usage.
@@ -166,7 +166,7 @@ int process_command(char **args)
   // 5. For the parent process, wait for the child process to complete and fetch the child's exit status value to child_exit_status
   // DO NOT PRINT ANYTHING TO THE OUTPUT
 
-  /***** BEGIN ANSWER HERE *****/
+  /*** BEGIN ANSWER HERE ***/
 
   //1. Check if args[0] is NULL. If it is, an empty command is entered, return 1
   if (args[0] == NULL)
@@ -287,14 +287,8 @@ void main_loop(void)
 
   /** TASK 4 **/
   // write a loop where you do the following:
-  // 1. invoke read_line_stdin() and store the output at line
-  // 2. invoke tokenize_line_stdin(line) and store the output at args**
-  // 3. execute the tokens using process_command(args)
+  status = 1;
 
-  // Basic cleanup for the next loop
-  // 4. free memory location containing the strings of characters
-  // 5. free memory location containing char* to the first letter of each word in the input string
-  // 6. check if process_command returns 1. If yes, loop back to Step 1 and prompt user with new input. Otherwise, exit the shell.
   // DO NOT PRINT ANYTHING TO THE OUTPUT
   do
   {
@@ -312,13 +306,27 @@ void main_loop(void)
     printf(" CSEShell\n↳ ");
     reset();
     fflush(stdout); // clear the buffer and move the output to the console using fflush
+    
+    while (status == 1){
+      // 1. invoke read_line_stdin() and store the output at line
+      line = read_line_stdin();
+      // 2. invoke tokenize_line_stdin(line) and store the output at args**
+      args = tokenize_line_stdin(line);
+      // 3. execute the tokens using process_command(args)
+      status = process_command(args);
 
-    /***** BEGIN ANSWER HERE *****/
-    status = shell_exit(args); // remove this line when you work on this task
+      // Basic cleanup for the next loop
+      // 4. free memory location containing the strings of characters
+      free(line);
+      
+      // 5. free memory location containing char* to the first letter of each word in the input string
+      free(args);};
 
-    /*********************/
-  } while (status);
+      // 6. check if process_command returns 1. If yes, loop back to Step 1 and prompt user with new input. Otherwise, exit the shell.
+
+  } while (status); 
 }
+/**
 
 int main(int argc, char **argv)
 {
@@ -346,8 +354,9 @@ int main(int argc, char **argv)
 
   return 0;
 }
+*/
 
-/**
+
 int main(int argc, char **argv)
 {
 
@@ -369,4 +378,3 @@ int main(int argc, char **argv)
 
   return 0;
 }
-*/

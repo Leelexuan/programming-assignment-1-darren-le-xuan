@@ -26,7 +26,7 @@ int execute(char **args)
     // DO NOT PRINT ANYTHING TO THE OUTPUT
 
     /***** BEGIN ANSWER HERE *****/
-
+    
     /*********************/
     fclose(fp); // close file.
     printf("%d \t %s \n", number_of_lines, args[1]);
