@@ -181,7 +181,6 @@ int process_command(char **args)
 
     if(strcmp(args[0], builtin_commands[i]) == 0){
 
-        printf("Builtin command %s found\n", args[0]);
         //3. If conditions in (2) are satisfied, call builtin shell commands
         builtin_command_func[i](args);
         return 1;
@@ -299,7 +298,7 @@ void main_loop(void)
   /** TASK 4 **/
   // write a loop where you do the following:
   status = 1;
-
+      
   // DO NOT PRINT ANYTHING TO THE OUTPUT
   do
   {
@@ -318,23 +317,24 @@ void main_loop(void)
     reset();
     fflush(stdout); // clear the buffer and move the output to the console using fflush
     
-    while (status == 1){
-      // 1. invoke read_line_stdin() and store the output at line
-      line = read_line_stdin();
-      // 2. invoke tokenize_line_stdin(line) and store the output at args**
-      args = tokenize_line_stdin(line);
+    
+    // 1. invoke read_line_stdin() and store the output at line
+    line = read_line_stdin();
+    // 2. invoke tokenize_line_stdin(line) and store the output at args**
+    args = tokenize_line_stdin(line);
 
-      // 3. execute the tokens using process_command(args)
-      status = process_command(args);
+    // 3. execute the tokens using process_command(args)
+    // 6. check if process_command returns 1. If yes, loop back to Step 1 and prompt user with new input. Otherwise, exit the shell.
+    status = process_command(args);
 
-      // Basic cleanup for the next loop
-      // 4. free memory location containing the strings of characters
-      free(line);
+    // Basic cleanup for the next loop
+    // 4. free memory location containing the strings of characters
+    free(line);
       
-      // 5. free memory location containing char* to the first letter of each word in the input string
-      free(args);};
+    // 5. free memory location containing char* to the first letter of each word in the input string
+    free(args);
 
-      // 6. check if process_command returns 1. If yes, loop back to Step 1 and prompt user with new input. Otherwise, exit the shell.
+    
 
   } while (status); 
 }
@@ -369,8 +369,7 @@ int main(int argc, char **argv)
 */
 
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
 
   printf("CSEShell Run successful. Running now: \n");
 
