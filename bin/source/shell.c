@@ -179,8 +179,6 @@ int process_command(char **args)
   //2. Otherwise, check if args[0] is in any of our builtin_commands: cd, help, exit, or usage.
   for(int i = 0; i < num_builtin_functions(); i++){
 
-    char *command = builtin_commands[i];
-
     if(strcmp(args[0], builtin_commands[i]) == 0){
 
         printf("Builtin command %s found\n", args[0]);
@@ -239,6 +237,12 @@ char *read_line_stdin(void)
     printf("Storage is full!");
   }
   /*********************/
+  //getline returns a /n at the end of every line, so remove it
+  int len = strlen(line);
+  if (line[len - 1] == '\n'){
+    line[len-1] = 0;
+  }
+
   return line;
 }
 
@@ -253,6 +257,7 @@ char **tokenize_line_stdin(char *line)
   int buf_size = SHELL_BUFFERSIZE, position = 0;     // assume there's also BUFFERSIZE amount of token, which is certainly enough because there's only BUFFERSIZE amount of chars
   char **tokens = malloc(buf_size * sizeof(char *)); // an array of pointers to the first char that marks a token in line
   char *token;
+  
 
   /** TASK 2 **/
   // 1. Check that char ** that is returned by malloc is not NULL
@@ -268,12 +273,14 @@ char **tokenize_line_stdin(char *line)
       tokens[i] = token;
       token = strtok(NULL, " ");
       i += 1;
+      
     }
   }
   else{
     printf("Error");
   }
   /*********************/
+
 
   return tokens;
 }
@@ -316,6 +323,7 @@ void main_loop(void)
       line = read_line_stdin();
       // 2. invoke tokenize_line_stdin(line) and store the output at args**
       args = tokenize_line_stdin(line);
+
       // 3. execute the tokens using process_command(args)
       status = process_command(args);
 
