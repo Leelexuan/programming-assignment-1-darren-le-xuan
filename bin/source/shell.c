@@ -27,7 +27,6 @@ void setup_program_path(char **args)
   strcpy(program_name, output_file_path);
   strcat(program_name, local_path);
   strcat(program_name, name);
-  printf("Program name: %s\n", program_name);
 }
 
 void print_error_message(char **args)
@@ -179,7 +178,7 @@ int process_command(char **args)
   for(int i = 0; i < num_builtin_functions(); i++){
 
     char *command = builtin_commands[i];
-    
+
     if(strcmp(args[0], builtin_commands[i]) == 0){
 
         printf("Builtin command %s found\n", args[0]);
