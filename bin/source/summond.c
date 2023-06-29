@@ -27,6 +27,63 @@ static int create_daemon()
     // DO NOT PRINT ANYTHING TO THE OUTPUT
     /***** BEGIN ANSWER HERE *****/
 
+    // 1. Fork() from the parent process
+    pid_t pid = fork();
+
+    // 2. Close parent with exit(1)
+    if (pid < 0)
+    {
+        fprintf(stderr, "Fork has failed. Exiting now");
+        exit(1);
+    }
+    else if (pid > 0)
+    {
+        exit(1);
+    }
+    else if (pid == 0){
+        // 3. On child process (this is intermediate process), call setsid() so that the child becomes session leader to lose the controlling TTY
+        setsid();
+        
+        // 4. Ignore SIGCHLD, SIGHUP
+        signal(SIGCHLD, SIG_IGN);
+        signal(SIGHUP, SIG_IGN);
+
+        // 5. Fork() again, parent (the intermediate) process terminates
+        pid_t pid_forkagn = fork();
+
+        if (pid_forkagn < 0)
+        {
+            fprintf(stderr, "Fork has failed. Exiting now");
+            exit(1);
+        }
+        else if (pid_forkagn > 0)
+        {
+            exit(1);
+        }
+        else if (pid_forkagn == 0){
+
+            // 6. Child process (the daemon) set new file permissions using umask(0). Daemon's PPID at this point is 1 (the init)
+            umask(0);
+
+            // 7. Change working directory to root
+            chdir("/");
+
+            // 8. Close all open file descriptors using sysconf(_SC_OPEN_MAX) and redirect fd 0,1,2 to /dev/null
+            /* Close all open file descriptors */
+            int x, fd0, fd1, fd2;
+            for (x = sysconf(_SC_OPEN_MAX); x>=0; x--)
+            {
+                close (x);
+            }
+
+            /*
+            * Attach file descriptors 0, 1, and 2 to /dev/null. */
+            fd0 = open("/dev/null", O_RDWR);
+            fd1 = dup(0);
+            fd2 = dup(0);
+        }        
+    }
+
     /*********************/
 
     return 0;
