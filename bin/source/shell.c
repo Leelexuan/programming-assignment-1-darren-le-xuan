@@ -155,7 +155,9 @@ int shell_exit(char **args)
 int process_command(char **args)
 {
   int child_exit_status = -1;
-  /** TASK 3 **/
+  int status;
+
+  // TASK 3 /
 
   // 1. Check if args[0] is NULL. If it is, an empty command is entered, return 1
   // 2. Otherwise, check if args[0] is in any of our builtin_commands: cd, help, exit, or usage.
@@ -164,7 +166,42 @@ int process_command(char **args)
   // 5. For the parent process, wait for the child process to complete and fetch the child's exit status value to child_exit_status
   // DO NOT PRINT ANYTHING TO THE OUTPUT
 
-  /***** BEGIN ANSWER HERE *****/
+  /*** BEGIN ANSWER HERE ***/
+
+  //1. Check if args[0] is NULL. If it is, an empty command is entered, return 1
+  if (args[0] == NULL)
+  {
+    return 1;
+  }
+
+  //2. Otherwise, check if args[0] is in any of our builtin_commands: cd, help, exit, or usage.
+  for(int i = 0; i < num_builtin_functions(); i++){
+
+    if(strcmp(args[0], builtin_commands[i]) == 0){
+
+    //3. If conditions in (2) are satisfied, call builtin shell commands
+        builtin_command_func[i](args);
+        return 1;
+    }
+
+    else{
+        // Otherwise perform fork() to exec the system program. Check if fork() is successful.
+        pid_t pid = fork();
+
+        if (pid < 0){
+          fprintf(stderr, "Fork has failed. Exiting now");
+          return 1; // exit error
+        }
+        else if (pid == 0){
+          exec_sys_prog(args);
+        }
+        else
+        {
+          wait(&status);
+          child_exit_status = WEXITSTATUS(status);
+        }
+    }
+  }
 
   /*********************/
   if (child_exit_status != 1)
@@ -250,14 +287,8 @@ void main_loop(void)
 
   /** TASK 4 **/
   // write a loop where you do the following:
-  // 1. invoke read_line_stdin() and store the output at line
-  // 2. invoke tokenize_line_stdin(line) and store the output at args**
-  // 3. execute the tokens using process_command(args)
+  status = 1;
 
-  // Basic cleanup for the next loop
-  // 4. free memory location containing the strings of characters
-  // 5. free memory location containing char* to the first letter of each word in the input string
-  // 6. check if process_command returns 1. If yes, loop back to Step 1 and prompt user with new input. Otherwise, exit the shell.
   // DO NOT PRINT ANYTHING TO THE OUTPUT
   do
   {
@@ -275,30 +306,57 @@ void main_loop(void)
     printf(" CSEShell\n↳ ");
     reset();
     fflush(stdout); // clear the buffer and move the output to the console using fflush
+    
+    while (status == 1){
+      // 1. invoke read_line_stdin() and store the output at line
+      line = read_line_stdin();
+      // 2. invoke tokenize_line_stdin(line) and store the output at args**
+      args = tokenize_line_stdin(line);
+      // 3. execute the tokens using process_command(args)
+      status = process_command(args);
 
-    /***** BEGIN ANSWER HERE *****/
-    status = shell_exit(args); // remove this line when you work on this task
+      // Basic cleanup for the next loop
+      // 4. free memory location containing the strings of characters
+      free(line);
+      
+      // 5. free memory location containing char* to the first letter of each word in the input string
+      free(args);};
 
-    /*********************/
-  } while (status);
+      // 6. check if process_command returns 1. If yes, loop back to Step 1 and prompt user with new input. Otherwise, exit the shell.
+
+  } while (status); 
 }
+/**
 
 int main(int argc, char **argv)
 {
- 
- printf("Shell Run successful. Running now: \n");
- 
- char* line = read_line_stdin();
- printf("The fetched line is : %s \n", line);
- 
- char** args = tokenize_line_stdin(line);
- printf("The first token is %s \n", args[0]);
- printf("The second token is %s \n", args[1]);
- 
- return 0;
-}
 
-/**
+  printf("Shell Run successful. Running now: \n");
+
+  char *line = read_line_stdin();
+  printf("The fetched line is : %s \n", line);
+
+  char **args = tokenize_line_stdin(line);
+  printf("The first token is %s \n", args[0]);
+  printf("The second token is %s \n", args[1]);
+
+  // Setup path
+  if (getcwd(output_file_path, sizeof(output_file_path)) != NULL)
+  {
+    printf("Current working dir: %s\n", output_file_path);
+  }
+  else
+  {
+    perror("getcwd() error, exiting now.");
+    return 1;
+  }
+  process_command(args);
+
+  return 0;
+}
+*/
+
+
 int main(int argc, char **argv)
 {
 
@@ -320,4 +378,3 @@ int main(int argc, char **argv)
 
   return 0;
 }
-*/
