@@ -235,7 +235,7 @@ char *read_line_stdin(void)
   if (line != NULL){
     //uses ssize_t instead of size_t for error handling - getline() returns -1 if nth was read
     ssize_t read = getline(&line, &buf_size, stdin);
-    if (read == -1 || read == 0){
+    if ((read == 1 && line[0] == '\n') || read == 0){
       free(line);
       return NULL;
     }
@@ -330,6 +330,11 @@ void main_loop(void)
     
     // 1. invoke read_line_stdin() and store the output at line
     line = read_line_stdin();
+
+    if (line == NULL){
+      continue;
+    }
+
     // 2. invoke tokenize_line_stdin(line) and store the output at args**
     args = tokenize_line_stdin(line);
 
