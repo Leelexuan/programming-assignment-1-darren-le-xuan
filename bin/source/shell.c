@@ -286,7 +286,7 @@ char **tokenize_line_stdin(char *line)
     }
   }
   else{
-    printf("Error");
+    // Error
   }
   /*********************/
 

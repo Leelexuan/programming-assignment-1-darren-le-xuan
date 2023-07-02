@@ -53,7 +53,7 @@ static int create_daemon()
 
         if (pid_forkagn < 0)
         {
-            fprintf(stderr, "Fork has failed. Exiting now");
+            // Fork has failed. Exiting now
             exit(1);
         }
         else if (pid_forkagn > 0)
