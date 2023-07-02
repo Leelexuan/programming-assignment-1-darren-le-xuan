@@ -235,9 +235,14 @@ char *read_line_stdin(void)
   if (line != NULL){
     //uses ssize_t instead of size_t for error handling - getline() returns -1 if nth was read
     ssize_t read = getline(&line, &buf_size, stdin);
+    if (read == -1 || read == 0){
+      free(line);
+      return NULL;
+    }
   }
   else{
     // Storage is full!
+    return NULL;
   }
   /*********************/
   //getline returns a /n at the end of every line, so remove it
