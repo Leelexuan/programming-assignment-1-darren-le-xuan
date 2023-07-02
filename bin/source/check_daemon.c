@@ -17,8 +17,6 @@ int execute()
 
    free(command);
 
-   char *buffer;
-   size_t bufsize = 32;
    int live_daemons = 0;
    FILE *fptr;
 
@@ -37,6 +35,9 @@ int execute()
         // File cannot be found. Exiting now
         return 1;
    }
+
+   char *buffer;
+   size_t bufsize = 0;
 
    while(getline(&buffer, &bufsize, fptr)!=-1){
         live_daemons++;
