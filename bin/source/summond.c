@@ -33,7 +33,7 @@ static int create_daemon()
     // 2. Close parent with exit(1)
     if (pid < 0)
     {
-        fprintf(stderr, "Fork has failed. Exiting now");
+        // Fork has failed. Exiting now
         exit(1);
     }
     else if (pid > 0)

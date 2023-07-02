@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <linux/limits.h>
 
 
 // vars to load system programs
@@ -44,6 +45,7 @@ int exec_sys_prog(char **args)
   if (execvp(program_name, args) == -1)
   {
     print_error_message(args);
+    exit(EXIT_FAILURE);
   }
 
   // This line will only be reached if execvp fails to create new process image
@@ -191,11 +193,12 @@ int process_command(char **args)
     pid_t pid = fork();
 
     if (pid < 0){
-      fprintf(stderr, "Fork has failed. Exiting now");
+      // Fork has failed. Exiting now
       return 1; // exit error
     }
     else if (pid == 0){
       status = exec_sys_prog(args);
+      printf("%i",status);
     }
 
     else
@@ -203,8 +206,7 @@ int process_command(char **args)
       wait(&status);
       child_exit_status = WEXITSTATUS(status);
     }
-    
-
+  
   /*********************/
   if (child_exit_status != 1)
   {
@@ -221,6 +223,7 @@ char *read_line_stdin(void)
 {
   size_t buf_size = SHELL_BUFFERSIZE;           // size of the buffer
   char *line = malloc(sizeof(char) * buf_size); // allocate memory space for the line*
+  
   /** TASK 1 **/
   // read one line from stdin using getline()
   // 1. Check that the char* returned by malloc is not NULL
@@ -326,19 +329,16 @@ void main_loop(void)
     args = tokenize_line_stdin(line);
 
     // 3. execute the tokens using process_command(args)
-    // 6. check if process_command returns 1. If yes, loop back to Step 1 and prompt user with new input. Otherwise, exit the shell.
-    status = process_command(args);
+    status = process_command(args);     // 6. check if process_command returns 1. If yes, loop back to Step 1 and prompt user with new input. Otherwise, exit the shell.
 
     // Basic cleanup for the next loop
     // 4. free memory location containing the strings of characters
     free(line);
-      
+
     // 5. free memory location containing char* to the first letter of each word in the input string
-    free(args);
+    free(args);    
 
-    
-
-  } while(status); 
+  } while(status);  
 }
 /**
 

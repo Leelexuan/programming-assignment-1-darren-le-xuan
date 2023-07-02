@@ -34,7 +34,7 @@ int execute()
    fptr = fopen("output.txt", "r");
 
    if (!fptr){
-        printf("File %s cannot be found.\n", "output.txt");
+        // File cannot be found. Exiting now
         return 1;
    }
 
