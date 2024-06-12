@@ -1,12 +1,9 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/EtMjXwzC)
 # 50.005 2022 Programming Assignment 1
 
-Type your answer in the spaces provided in each file, labeled as `BEGIN ANSWER`. 
-1.  <span style="color:#f7007f;"><b>DO NOT</b></span> modify any `makefile`
-2.  <span style="color:#f7007f;"><b>DO NOT</b></span> create more scripts other than what's given in the starter code
-3.  <span style="color:#f7007f;"><b>DO NOT</b></span> modify any interface (keep original functions as-is)
-4.  <span style="color:#f7007f;"><b>DO NOT</b></span> print <span style="color:#f7007f;"><b>anything</b></span> to the console, other than the provided print statements. Any print statements you used for debugging must be deleted. 
+In this assignment, you will implement a secure file upload application from a client to a secure file server. By secure, we mean three fulfilled requirements:
 
-Linux Commit Test
+First, before you do your upload as the client, you should authenticate the identity of the file server so you won’t leak your data to random entities including criminals.
+Secondly, you want to ensure that you’re talking to a live server too.
+Thirdly, while carrying out the upload you should be able to protect the confidentiality of the data against eavesdropping by any curious adversaries.
 
 Done by Darren Chan Yu Hao and Lee Le Xuan
